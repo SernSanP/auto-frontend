@@ -2,6 +2,7 @@ import Papa from "papaparse";
 import { useState } from "react";
 import { getBankFromAbbr } from "src/bank";
 
+
 interface Transaction {
   bankCode: string;
   fullName: string;
@@ -26,7 +27,7 @@ const validate_error = {
   bal_false:"รูปแบบยอดเงินไม่ถูกต้อง",
 }
 
-export default function papa() {
+export default function Papaparse() {
   const [selectedFile, setSelectedFile] = useState<File>();
 
   const check_data_null = (data:any) => {
