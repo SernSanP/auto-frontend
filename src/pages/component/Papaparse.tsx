@@ -67,7 +67,7 @@ export default function Papaparse() {
     if(! data[2].match(/[0-9]{10}/)){
       error.push(validate_error.acc_false)
     }
-    if(! data[3].match(/^[0-9,]+\.\d{0,2}$/)){
+    if( ! data[3].match(/^[0-9,]+\.\d{0,2}$/) && ! data[3].match(/^[0-9]+$/) ){
       error.push(validate_error.bal_false)
     }
     if(error.length != 0){
@@ -78,34 +78,44 @@ export default function Papaparse() {
   }
 
   const validate = (transactionlist:any) => {
-    const res = []
+    const res_error:any[] = []
+    const res:any[] = []
     for(let i = 1;i<transactionlist.length;i++){
       let check_null = false
       if(check_data_null(transactionlist[i])){
-        res.push(linevalidate(transactionlist[i],i+1))
+        res.push(transactionlist[i])
+        var vali = linevalidate(transactionlist[i],i+1)
+        if(vali != transactionlist[i]){
+          res_error.push(vali)
+        }
       }
     }
-    console.log(res)
+    if(res_error.length != 0){
+      return {res:res_error,error:true}
+    }
+    return {res:res,error:false}
   }
 
-	// const changeHandler = (event:any) => {
-  //   console.log(event.target.files[0])
-	// };
-  
   const onDrop = useCallback(acceptedFiles => {
     console.log(acceptedFiles[0]);
     setSelectedFile(acceptedFiles[0]);
     Papa.parse(acceptedFiles[0], {
       complete: function(results:any) {
         console.log(results)
-        validate(results.data)
+        const res = validate(results.data)
+        console.log(res.res)
+        if(res.error){
+          console.log("error")
+        }
+        else{
+          console.log("pass")
+        }
       }
     });
   }, []);
 
   return (
     <div className='p-4'>
-      {/* <input type="file" name="file" onChange={changeHandler} /> */}
       <Dropzone onDrop={onDrop} accept={".csv"} />
     </div>
   );
