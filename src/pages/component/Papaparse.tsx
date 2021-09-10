@@ -1,3 +1,4 @@
+import axios from "axios";
 import Papa from "papaparse";
 import { useCallback, useState } from "react";
 import { getBankFromAbbr } from "src/bank";
@@ -109,14 +110,24 @@ export default function Papaparse() {
         }
         else{
           console.log("pass")
+          axios.post(
+            'http://localhost:5000/transfer/create',
+            {
+              data:res.res,
+              userID:'',
+              source_system_name:'',
+            }
+          );
         }
       }
     });
   }, []);
 
   return (
-    <div className='p-4'>
-      <Dropzone onDrop={onDrop} accept={".csv"} />
+    <div>
+      <div className='w-full max-w-xs border-dashed border-4 border-light-blue-500'>
+        <Dropzone onDrop={onDrop} accept={".csv"} />
+      </div>
     </div>
   );
 }
