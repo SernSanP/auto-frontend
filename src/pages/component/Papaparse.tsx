@@ -1,6 +1,7 @@
 import Papa from "papaparse";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { getBankFromAbbr } from "src/bank";
+import Dropzone from "./DropZone";
 
 
 interface Transaction {
@@ -87,18 +88,25 @@ export default function Papaparse() {
     console.log(res)
   }
 
-	const changeHandler = (event:any) => {
-		setSelectedFile(event.target.files[0]);
-    Papa.parse(event.target.files[0], {
+	// const changeHandler = (event:any) => {
+  //   console.log(event.target.files[0])
+	// };
+  
+  const onDrop = useCallback(acceptedFiles => {
+    console.log(acceptedFiles[0]);
+    setSelectedFile(acceptedFiles[0]);
+    Papa.parse(acceptedFiles[0], {
       complete: function(results:any) {
         console.log(results)
         validate(results.data)
       }
     });
-	};
+  }, []);
+
   return (
     <div className='p-4'>
-      <input type="file" name="file" onChange={changeHandler} />
+      {/* <input type="file" name="file" onChange={changeHandler} /> */}
+      <Dropzone onDrop={onDrop} accept={".csv"} />
     </div>
   );
 }
