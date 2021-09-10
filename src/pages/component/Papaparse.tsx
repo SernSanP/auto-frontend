@@ -17,6 +17,11 @@ interface TransactionError {
   errors: string[];
 }
 
+interface Result {
+  res: string[];
+  error: boolean;
+}
+
 const validate_error = {
   column_toomany:"จำนวนคอลัมน์เกินกำหนด",
   column_toolittle:"จำนวนคอลัมน์น้อยกว่ากำหนด",
@@ -31,6 +36,7 @@ const validate_error = {
 
 export default function Papaparse() {
   const [selectedFile, setSelectedFile] = useState<File>();
+  const [result, setResult] = useState<Result>({ res: [] ,error:false })
 
   const check_data_null = (data:any) => {
     if(data[0]=="",data[1] == "",data[2] == "",data[3]==""){
@@ -107,21 +113,26 @@ export default function Papaparse() {
         console.log(res.res)
         if(res.error){
           console.log("error")
+          setResult(res)
         }
         else{
           console.log("pass")
-          axios.post(
-            'http://localhost:5000/transfer/create',
-            {
-              data:res.res,
-              userID:'',
-              source_system_name:'',
-            }
-          );
+          setResult(res)
         }
       }
     });
   }, []);
+
+  async function onUpload() {
+    await axios.post(
+      'http://localhost:5000/transfer/create',
+      {
+        data:result.res,
+        userID:'',
+        source_system_name:'',
+      }
+    );
+  }
 
   return (
     <div>
