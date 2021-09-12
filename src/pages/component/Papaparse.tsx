@@ -20,6 +20,7 @@ interface TransactionError {
 interface Result {
   res: string[][];
   error: boolean;
+  total:number
 }
 
 const validate_error = {
@@ -35,7 +36,7 @@ const validate_error = {
 }
 
 export default function Papaparse() {
-  const [result, setResult] = useState<Result>({ res: [] ,error:false })
+  const [result, setResult] = useState<Result>({ res: [] ,error:false ,total:0})
   const [upload, setUpload] = useState(false)
 
   const check_data_null = (data:any) => {
@@ -87,10 +88,12 @@ export default function Papaparse() {
   const validate = (transactionlist:any) => {
     const res_error:any[] = []
     const res:any[] = []
+    let total = 0
     for(let i = 1;i<transactionlist.length;i++){
       let check_null = false
       if(check_data_null(transactionlist[i])){
         res.push(transactionlist[i])
+        total += parseFloat(transactionlist[i][3]) 
         var vali = linevalidate(transactionlist[i],i+1)
         if(vali != transactionlist[i]){
           res_error.push(vali)
@@ -98,9 +101,9 @@ export default function Papaparse() {
       }
     }
     if(res_error.length != 0){
-      return {res:res_error,error:true}
+      return {res:res_error,error:true ,total:0}
     }
-    return {res:res,error:false}
+    return {res:res,error:false ,total:total}
   }
 
   const onDrop = useCallback(acceptedFiles => {
@@ -141,15 +144,17 @@ export default function Papaparse() {
       console.log(response);
       console.log(packet)
     });
+    setResult({ res: [] ,error:false ,total:0})
+    setUpload(false)
   }
 
   const showdata = (data:any[]) =>{
     return(
-      <div className="grid grid-cols-4 gap-4">
-        <div>{data[0]}</div>
-        <div>{data[1]}</div>
-        <div>{data[2]}</div>
-        <div>{data[3]}</div>
+      <div className="grid grid-cols-4 gap-4 pt-2 pb-2">
+        <div className="pt-2 text-xs">{data[0]}</div>
+        <div className="pt-2 text-xs">{data[1]}</div>
+        <div className="pt-2 text-xs">{data[2]}</div>
+        <div className="pt-2 text-xs">{data[3]}</div>
       </div>
     )
   }
@@ -164,7 +169,7 @@ export default function Papaparse() {
   }
 
   const resetUpload = () => {
-    setResult({ res: [] ,error:false })
+    setResult({ res: [] ,error:false ,total:0})
     setUpload(false)
   }
 
@@ -178,17 +183,28 @@ export default function Papaparse() {
           <div className="flex items-center justify-center gap-2 pt-4">
             <img src="https://image.freepik.com/free-icon/forbidden-simbol_318-9698.jpg" className="w-20 h-20"/>
           </div>
+          <div className="pt-4 text-lg font-bold pb-4 text-center">
+            Reading Failed
+          </div>
+          <div className="pt-4 pb-4 text-center">โปรดตรวจสอบไฟล์ CSV ของท่านดังต่อไปนี้</div>
           {result.res.map((data)=>showerror(data))}
         </div> : 
         <div>
           <div className="flex items-center justify-center gap-2 pt-4">
             <img src="https://image.flaticon.com/icons/png/512/20/20406.png" className="w-20 h-20"/>
           </div>
+          <div className="pt-4 text-lg font-bold">
+            Upload Confirm
+          </div>
           <div className="grid grid-cols-4 pt-4 gap-4">
-            <div>ชื่อธนาคาร</div>
-            <div>ชื่อ นามสกุล</div>
-            <div>เลขบัญชี</div>
-            <div>จำนวนเงิน</div>
+            <div className="col-span-2">Total {result.res.length} Transactions</div>
+            <div className="col-span-2">Total {result.total} Bath</div>
+          </div>
+          <div className="grid grid-cols-4 pt-4 gap-4">
+            <div className="font-bold">ชื่อธนาคาร</div>
+            <div className="font-bold">ชื่อ นามสกุล</div>
+            <div className="font-bold">เลขบัญชี</div>
+            <div className="font-bold">จำนวนเงิน</div>
           </div>
           {result.res.map((data)=>showdata(data))}
         </div> }
@@ -200,9 +216,7 @@ export default function Papaparse() {
        :
      <div>
        <div className="flex items-center justify-center gap-2 pt-4">
-          <div className='w-30 h-20 border-dashed border-4 border-light-blue-500 bg-white'>
-            <Dropzone onDrop={onDrop} accept={".csv"} />
-          </div>
+          <Dropzone onDrop={onDrop} accept={".csv"} />
        </div>
        <div className="pt-4 text-lg font-extrabold">CSV Template Format</div>
        <div>Row 1: Header</div>

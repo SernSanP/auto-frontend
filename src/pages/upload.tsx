@@ -6,8 +6,8 @@ import Papaparse from "./component/Papaparse";
 export default function upload() {
     
   return (
-         <div className="w-full max-w-lg">
-            <div className="flex items-center justify-center bg-gray-200 shadow-md rounded px-8 pt-6 pb-8 mb-4">
+         <div className="items-center justify-center bg-gray-200 px-8 pt-8 pb-8">
+            <div className="flex items-center justify-center bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                 <Papaparse></Papaparse>
             </div>
         </div>
