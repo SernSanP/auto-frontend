@@ -18,7 +18,7 @@ interface TransactionError {
 }
 
 interface Result {
-  res: string[];
+  res: string[][];
   error: boolean;
 }
 
@@ -35,8 +35,8 @@ const validate_error = {
 }
 
 export default function Papaparse() {
-  const [selectedFile, setSelectedFile] = useState<File>();
   const [result, setResult] = useState<Result>({ res: [] ,error:false })
+  const [upload, setUpload] = useState(false)
 
   const check_data_null = (data:any) => {
     if(data[0]=="",data[1] == "",data[2] == "",data[3]==""){
@@ -105,7 +105,6 @@ export default function Papaparse() {
 
   const onDrop = useCallback(acceptedFiles => {
     console.log(acceptedFiles[0]);
-    setSelectedFile(acceptedFiles[0]);
     Papa.parse(acceptedFiles[0], {
       complete: function(results:any) {
         console.log(results)
@@ -114,31 +113,114 @@ export default function Papaparse() {
         if(res.error){
           console.log("error")
           setResult(res)
+          setUpload(true)
         }
         else{
           console.log("pass")
           setResult(res)
+          setUpload(true)
         }
       }
     });
   }, []);
 
   async function onUpload() {
-    await axios.post(
-      'http://localhost:5000/transfer/create',
+    const packet = await axios.post(
+      'http://localhost:5000/transfer/test',
       {
         data:result.res,
-        userID:'',
-        source_system_name:'',
+        userID:'d95cd33f-865a-4f70-9d92-7e9609581b0b',
+        source_system_name:"ssn_test",
+      },
+      {
+        headers: { 
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
       }
-    );
+    ).then(function (response) {
+      console.log(response);
+      console.log(packet)
+    });
+  }
+
+  const showdata = (data:any[]) =>{
+    return(
+      <div className="grid grid-cols-4 gap-4">
+        <div>{data[0]}</div>
+        <div>{data[1]}</div>
+        <div>{data[2]}</div>
+        <div>{data[3]}</div>
+      </div>
+    )
+  }
+
+  const showerror = (data:any) =>{
+    return(
+      <div>
+        <div>line {data.line}</div>
+        <div className="pl-6">{data.errors.map(error => <div>- {error}</div>)}</div>
+      </div>
+    )
+  }
+
+  const resetUpload = () => {
+    setResult({ res: [] ,error:false })
+    setUpload(false)
   }
 
   return (
-    <div>
-      <div className='w-full max-w-xs border-dashed border-4 border-light-blue-500'>
-        <Dropzone onDrop={onDrop} accept={".csv"} />
+    <div className="">
+      <p className="text-blue-600 font-black text-2xl">Upload a Transaction</p>
+      {upload ? 
+      <div>
+        {result.error ? 
+        <div >
+          <div className="flex items-center justify-center gap-2 pt-4">
+            <img src="https://image.freepik.com/free-icon/forbidden-simbol_318-9698.jpg" className="w-20 h-20"/>
+          </div>
+          {result.res.map((data)=>showerror(data))}
+        </div> : 
+        <div>
+          <div className="flex items-center justify-center gap-2 pt-4">
+            <img src="https://image.flaticon.com/icons/png/512/20/20406.png" className="w-20 h-20"/>
+          </div>
+          <div className="grid grid-cols-4 pt-4 gap-4">
+            <div>ชื่อธนาคาร</div>
+            <div>ชื่อ นามสกุล</div>
+            <div>เลขบัญชี</div>
+            <div>จำนวนเงิน</div>
+          </div>
+          {result.res.map((data)=>showdata(data))}
+        </div> }
+        <div  className="flex items-center justify-center gap-2 pt-4">
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onClick={(e)=>onUpload()}>Upload</button>
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onClick={(e)=>resetUpload()}>Cancel</button>
+        </div>
       </div>
+       :
+     <div>
+       <div className="flex items-center justify-center gap-2 pt-4">
+          <div className='w-30 h-20 border-dashed border-4 border-light-blue-500 bg-white'>
+            <Dropzone onDrop={onDrop} accept={".csv"} />
+          </div>
+       </div>
+       <div className="pt-4 text-lg font-extrabold">CSV Template Format</div>
+       <div>Row 1: Header</div>
+       <div>Row 2+: Transaction</div>
+       <div className="pt-4 text-lg font-extrabold">ตัวอย่าง</div>
+       <div className="grid grid-cols-4 pt-4 gap-4">
+            <div className="font-bold">ชื่อธนาคาร</div>
+            <div className="font-bold">ชื่อ นามสกุล</div>
+            <div className="font-bold">เลขบัญชี</div>
+            <div className="font-bold">จำนวนเงิน</div>
+            <div>KBNK</div>
+            <div>Jane Doe</div>
+            <div>0123456789</div>
+            <div>15000</div>
+        </div>
+     </div> }
+      
+      
     </div>
   );
 }
