@@ -1,9 +1,11 @@
 import React from 'react'
 
-export function Menubar() {
+const Navbar = () =>  {
     return (
-        <div className="bg-gray-300">
+        <div className="text-white bg-blue-500 h-16">
             <div>Auto Transfer Manager</div>
         </div>
     )
 }
+
+export default Navbar;
