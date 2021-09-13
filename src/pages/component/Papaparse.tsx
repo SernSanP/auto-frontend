@@ -114,12 +114,10 @@ export default function Papaparse() {
         const res = validate(results.data)
         console.log(res.res)
         if(res.error){
-          console.log("error")
           setResult(res)
           setUpload(true)
         }
         else{
-          console.log("pass")
           setResult(res)
           setUpload(true)
         }
@@ -129,21 +127,14 @@ export default function Papaparse() {
 
   async function onUpload() {
     const packet = await axios.post(
-      'http://localhost:5000/transfer/test',
+      'http://localhost:5000/transfer/create',
       {
-        data:result.res,
+        data: result.res,
         userID:'d95cd33f-865a-4f70-9d92-7e9609581b0b',
         source_system_name:"ssn_test",
-      },
-      {
-        headers: { 
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
       }
-    ).then(function (response) {
-      console.log(response);
-      console.log(packet)
-    });
+    )
+    console.log(packet)
     setResult({ res: [] ,error:false ,total:0})
     setUpload(false)
   }
