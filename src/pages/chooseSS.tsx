@@ -2,12 +2,19 @@ import axios from 'axios';
 import React from 'react'
 import { useForm } from "react-hook-form";
 
+async function loadss() {
+    let sourcesystem:any
+    axios.get(
+        'http://localhost:5000/source-system',{ params: { token: '' ,is_disabled:false} }
+      ).then(res => {console.log(res.data)})
+}
+
 const ChooseSS = () => {
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
     async function onSubmit(data:any) {
         console.log(data)
     }
-    console.log(watch("example"));
+    loadss()
     return (
         <div className="items-center justify-center bg-gray-200 px-8 pt-8 pb-8">
             <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
