@@ -9,6 +9,7 @@ const Login = () => {
   const router = useRouter();
 
   const login = async (e: { preventDefault: () => void }) => {
+    localStorage.clear()
     e.preventDefault();
     const credentials = {
       email,
