@@ -1,4 +1,5 @@
 import axios from 'axios';
+import router from 'next/dist/client/router';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -20,12 +21,23 @@ const ChooseSS = () => {
       },
     };
     const getSourcesystem = async () => {
-      const { data } = await axios.get('http://localhost:5000/users-source-systems', config);
-      console.log('data',data)
-      data.map((r:any) => setSourceSystems([...sourceSystems,r.source_system_name]))
+      const { data } = await axios.get(
+        'http://localhost:5000/users-source-systems',
+        config,
+      );
+      console.log('data', data);
+      data.map((r: any) =>
+        setSourceSystems([...sourceSystems, r.source_system_name]),
+      );
     };
     getSourcesystem();
   }, []);
+
+  const logout = () => {
+    console.log('clicked');
+    localStorage.clear();
+    router.push('/login');
+  };
 
   return (
     <div className="items-center justify-center bg-gray-200 px-8 pt-8 pb-8">
@@ -54,7 +66,10 @@ const ChooseSS = () => {
           </div>
         </form>
         <div className="flex items-center justify-center pt-2">
-          <button className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+          <button
+            className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            onClick={logout}
+          >
             Logout
           </button>
         </div>
