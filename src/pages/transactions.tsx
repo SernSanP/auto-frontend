@@ -1,7 +1,23 @@
-import React from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { UploadedTransactions } from './components/UploadedTransactions';
 
 const transactions = () => {
+
+  const [transactions, setTransactions] = useState([])
+  useEffect(() => {
+    const config = {
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token'),
+      },
+    };
+    const getSourcesystem = async () => {
+      const { data } = await axios.get('http://localhost:5000/transactions', config);
+      console.log('data',data)
+    };
+    getSourcesystem();
+  }, []);
+
   return (
     <div>
       <nav>
