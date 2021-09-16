@@ -3,6 +3,13 @@ import router from 'next/dist/client/router';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+async function loadss() {
+    let sourcesystem:any
+    axios.get(
+        'http://localhost:5000/source-system',{ params: { token: '' ,is_disabled:false} }
+      ).then(res => {console.log(res.data)})
+}
+
 const ChooseSS = () => {
   const [message, setMessage] = useState('');
   const [sourceSystems, setSourceSystems] = useState(['']);
