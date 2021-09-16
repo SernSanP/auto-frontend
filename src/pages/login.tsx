@@ -1,32 +1,41 @@
-import axios from "axios";
-import React from "react";
-import { useForm } from "react-hook-form";
+import axios from 'axios';
+import { Router, useRouter } from 'next/dist/client/router';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import cookie from 'js-cookie';
 
 const Login = () => {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
-  async function onSubmit(data:any) {
-      console.log(data)
-      // await axios.post('http://localhost:5000/auth/signin',{ email:data.Username , password:data.Password})
-  }
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
+  const router = useRouter();
+
+  const login = async (e: { preventDefault: () => void; }) => {
+    e.preventDefault();
+    const credentials = {
+      email,
+      password,
+    };
+    await axios
+      .post('http://localhost:5000/auth/signin', credentials)
+      .then((res) => localStorage.setItem('token', res.data.accessToken));
+    await router.push('/chooseSS');
+  };
+
   return (
     <div className="w-full max-w-xs">
-      <form
-        className=""
-        onSubmit={handleSubmit(onSubmit)}
-      >
+      <form onSubmit={login}>
         <div>Please Login</div>
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2">
-            Username
+            Email
           </label>
           <input
             className="border-gray-300 appearance-none border rounded w-full py-2 px-3 text-gray-600 leading-tight focus:outline-none focus:shadow-outline"
-            {...register("Username")}
+            name="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
         <div className="mb-6">
@@ -35,20 +44,24 @@ const Login = () => {
           </label>
           <input
             className="border-gray-300 appearance-none border rounded w-full py-2 px-3 text-gray-600 leading-tight focus:outline-none focus:shadow-outline"
-            {...register("Password")}
+            name="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
         <div className="flex items-center justify-center">
           <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="border border-blue bg-blue-600 text-white py-2 px-4 rounded-full"
             type="submit"
           >
             Login
           </button>
         </div>
+        {loginError && <p className="text-red-400">{loginError}</p>}
       </form>
     </div>
   );
 };
 
-export default Login
+export default Login;

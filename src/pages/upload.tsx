@@ -1,7 +1,7 @@
 import axios from "axios";
 import React from "react";
 import { useForm } from "react-hook-form";
-import Papaparse from "./component/Papaparse";
+import Papaparse from "./components/Papaparse";
 
 export default function upload() {
     
