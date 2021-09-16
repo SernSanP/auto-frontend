@@ -7,7 +7,7 @@ export const UploadedTransactions = () => {
         <div className="text-black font-bold">Uploaded 08/09/21 08:56</div>
         <div>Waiting for tranfer</div>
         <div className="flex justify-between">
-          <div>Complete 0/2</div>
+          <div>Complete 0/1</div>
           <div>Total: B0</div>
         </div>
         <div className="text-center"><hr/></div>

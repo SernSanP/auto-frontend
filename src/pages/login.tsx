@@ -1,39 +1,30 @@
 import axios from 'axios';
-import { Router } from 'next/dist/client/router';
+import { Router, useRouter } from 'next/dist/client/router';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import cookie from 'js-cookie';
 
 const Login = () => {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
-
-  const [loginError, setLoginError] = useState('');
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
+  const router = useRouter();
 
-  const login = (e) => {
+  const login = async (e: { preventDefault: () => void; }) => {
+    e.preventDefault();
     const credentials = {
-      email: username,
+      email,
       password,
     };
-    e.preventDefault();
-    axios
+    await axios
       .post('http://localhost:5000/auth/signin', credentials)
-      .then((res) => localStorage.set('token',res.data.token))
-      .catch((error) => {
-        setLoginError(error.message);
-      });
-    
+      .then((res) => localStorage.setItem('token', res.data.accessToken));
+    await router.push('/chooseSS');
   };
 
   return (
     <div className="w-full max-w-xs">
-      <form className="" onSubmit={login}>
+      <form onSubmit={login}>
         <div>Please Login</div>
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -41,10 +32,10 @@ const Login = () => {
           </label>
           <input
             className="border-gray-300 appearance-none border rounded w-full py-2 px-3 text-gray-600 leading-tight focus:outline-none focus:shadow-outline"
-            name="username"
-            type="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            name="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
         <div className="mb-6">
