@@ -18,19 +18,19 @@ const createUser_SS = () => {
     // );
     const onSubmit = (data) => console.log(data)
 
-    useEffect(() => {
-        const config = {
-            headers: {
-                Authorization: 'Bearer ' + localStorage.getItem('token'),
-            },
-        };
-        const getSS = async () => {
-            const { data } = await axios.get('http://localhost:5000/source-system', config);
-            console.log('data', data)
-            setSourceSystem(data)
-        };
-        getSS();
-    }, []);
+    // useEffect(() => {
+    //     const config = {
+    //         headers: {
+    //             Authorization: 'Bearer ' + localStorage.getItem('token'),
+    //         },
+    //     };
+    //     const getSS = async () => {
+    //         const { data } = await axios.get('http://localhost:5000/source-system', config);
+    //         console.log('data', data)
+    //         setSourceSystem(data)
+    //     };
+    //     getSS();
+    // }, []);
 
     return (
         <div>

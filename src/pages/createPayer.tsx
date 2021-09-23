@@ -1,10 +1,10 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
-
+import { getBankFromAbbr } from 'src/bank';
 
 const createPayer = () => {
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, formState: { errors } } = useForm();
     const onSubmit = data => axios.post(
         'http://localhost:5000/payers',
         {
@@ -14,8 +14,8 @@ const createPayer = () => {
             payer_bank_account: data.payer_bank_account,
             payer_msisdn: data.payer_msisdn,
         }
-    );
-    // const onSubmit =(data)=> console.log(data)
+    ).catch(err => console.log(err));;
+    // const onSubmit = (data) => console.log(data)
     const [users, setUsers] = useState([])
     useEffect(() => {
         const config = {
@@ -39,7 +39,7 @@ const createPayer = () => {
                     <label className="block text-gray-700 text-sm font-bold mb-2">
                         Select Payer
                     </label>
-                    <select {...register("Payer")}
+                    <select {...register("id")}
                         className="border-gray-300 appearance-none border rounded w-full py-2 px-3 text-gray-600 leading-tight focus:outline-none focus:shadow-outline"
                     >
                         {users.map((user) => (
@@ -51,9 +51,12 @@ const createPayer = () => {
                     <label className="block text-gray-700 text-sm font-bold mb-2">
                         Bank abbr
                     </label>
-                    <input {...register("payer_bank_abbr")}
+                    <input {...register("payer_bank_abbr", {
+                        validate: value => getBankFromAbbr(value) || "Nice try!"
+                    })}
                         className="border-gray-300 appearance-none border rounded w-full py-2 px-3 text-gray-600 leading-tight focus:outline-none focus:shadow-outline"
                     />
+                    {errors.payer_bank_abbr?.type === 'validate' && (<div className="text-red-600">Bank Not Found</div>)}
                 </div>
                 <div className="mb-6">
                     <label className="block text-gray-700 text-sm font-bold mb-2">
