@@ -8,28 +8,28 @@ const createPayer = () => {
     const onSubmit = data => axios.post(
         'http://localhost:5000/payers',
         {
-          created_user_id: data.id,
-          source_system_name:"ssn_test",
-          payer_bank_abbr:data.payer_bank_abbr,
-          payer_bank_account:data.payer_bank_account,
-          payer_msisdn:data.payer_msisdn,
+            created_user_id: data.id,
+            source_system_name: "ssn_test",
+            payer_bank_abbr: data.payer_bank_abbr,
+            payer_bank_account: data.payer_bank_account,
+            payer_msisdn: data.payer_msisdn,
         }
-      );
+    );
     // const onSubmit =(data)=> console.log(data)
     const [users, setUsers] = useState([])
     useEffect(() => {
         const config = {
-          headers: {
-            Authorization: 'Bearer ' + localStorage.getItem('token'),
-          },
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token'),
+            },
         };
         const getUsers = async () => {
-          const { data } = await axios.get('http://localhost:5000/users', config);
-          console.log('data',data)
-          setUsers(data)
+            const { data } = await axios.get('http://localhost:5000/users', config);
+            console.log('data', data)
+            setUsers(data)
         };
         getUsers();
-      }, []);
+    }, []);
 
     return (
         <div>
@@ -51,7 +51,7 @@ const createPayer = () => {
                     <label className="block text-gray-700 text-sm font-bold mb-2">
                         Bank abbr
                     </label>
-                    <input {...register("payer_bank_abbr")} 
+                    <input {...register("payer_bank_abbr")}
                         className="border-gray-300 appearance-none border rounded w-full py-2 px-3 text-gray-600 leading-tight focus:outline-none focus:shadow-outline"
                     />
                 </div>
@@ -67,7 +67,7 @@ const createPayer = () => {
                     <label className="block text-gray-700 text-sm font-bold mb-2">
                         msisdn
                     </label>
-                    <input {...register("payer_msisdn")} 
+                    <input {...register("payer_msisdn")}
                         className="border-gray-300 appearance-none border rounded w-full py-2 px-3 text-gray-600 leading-tight focus:outline-none focus:shadow-outline"
                     />
                 </div>
