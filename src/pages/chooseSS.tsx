@@ -3,10 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 async function loadss() {
-    let sourcesystem:any
-    axios.get(
-        'http://localhost:5000/source-system',{ params: { token: '' ,is_disabled:false} }
-      ).then(res => {console.log(res.data)})
+  let sourcesystem: any
+  axios.get(
+    'http://localhost:5000/source-system', { params: { token: '', is_disabled: false } }
+  ).then(res => { console.log(res.data) })
 }
 
 const ChooseSS = () => {
@@ -28,8 +28,8 @@ const ChooseSS = () => {
     };
     const getSourcesystem = async () => {
       const { data } = await axios.get('http://localhost:5000/users-source-systems', config);
-      console.log('data',data)
-      data.map((r:any) => setSourceSystems([...sourceSystems,r.source_system_name]))
+      console.log('data', data)
+      data.map((r: any) => setSourceSystems([...sourceSystems, r.source_system_name]))
     };
     getSourcesystem();
   }, []);

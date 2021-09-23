@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 
 
-const createSS = () => {
+const createUser = () => {
     const { register, handleSubmit } = useForm();
     // const onSubmit = data => axios.post(
     //     'http://localhost:5000/payers',
@@ -20,20 +20,36 @@ const createSS = () => {
     return (
         <div>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <div>Create Source System</div>
+                <div>Create User</div>
                 <div className="mb-6">
                     <label className="block text-gray-700 text-sm font-bold mb-2">
-                        Source System Name
+                        Email
                     </label>
-                    <input {...register("source_system_name")}
+                    <input {...register("email")}
                         className="border-gray-300 appearance-none border rounded w-full py-2 px-3 text-gray-600 leading-tight focus:outline-none focus:shadow-outline"
                     />
                 </div>
                 <div className="mb-6">
                     <label className="block text-gray-700 text-sm font-bold mb-2">
-                        Token
+                        Password
                     </label>
-                    <input {...register("token")}
+                    <input {...register("password")}
+                        className="border-gray-300 appearance-none border rounded w-full py-2 px-3 text-gray-600 leading-tight focus:outline-none focus:shadow-outline"
+                    />
+                </div>
+                <div className="mb-6">
+                    <label className="block text-gray-700 text-sm font-bold mb-2">
+                        First name
+                    </label>
+                    <input {...register("first_name")}
+                        className="border-gray-300 appearance-none border rounded w-full py-2 px-3 text-gray-600 leading-tight focus:outline-none focus:shadow-outline"
+                    />
+                </div>
+                <div className="mb-6">
+                    <label className="block text-gray-700 text-sm font-bold mb-2">
+                        Last name
+                    </label>
+                    <input {...register("last_name")}
                         className="border-gray-300 appearance-none border rounded w-full py-2 px-3 text-gray-600 leading-tight focus:outline-none focus:shadow-outline"
                     />
                 </div>
@@ -50,4 +66,4 @@ const createSS = () => {
     )
 }
 
-export default createSS
+export default createUser
