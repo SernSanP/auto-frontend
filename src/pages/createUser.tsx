@@ -5,22 +5,29 @@ import { useForm } from 'react-hook-form';
 
 const createUser = () => {
     const { register, handleSubmit } = useForm();
-    // const onSubmit = data => axios.post(
-    //     'http://localhost:5000/payers',
-    //     {
-    //         created_user_id: data.id,
-    //         source_system_name: "ssn_test",
-    //         payer_bank_abbr: data.payer_bank_abbr,
-    //         payer_bank_account: data.payer_bank_account,
-    //         payer_msisdn: data.payer_msisdn,
-    //     }
-    // );
-    const onSubmit = (data) => console.log(data)
+    const onSubmit = data => axios.post(
+        'http://localhost:5000/users',
+        {
+            email: data.email,
+            password: data.password,
+            first_name: data.first_name,
+            last_name: data.last_name,
+        }
+    );
+    // const onSubmit = (data) => console.log(data)
 
     return (
-        <div>
+        <div className="flex justify-between items-center grid grid-cols-1 gap-4 max-w-md">
+            <nav>
+                <ul className="list-none">
+                    <li className="inline-block">Home {'>'}&nbsp;</li>
+                    <li className="inline-block">Transactions {'>'}&nbsp;</li>
+                    <li className="inline-block">Users {'>'}&nbsp;</li>
+                    <li className="inline-block">Create User</li>
+                </ul>
+            </nav>
+            <h1 className="text-blue-500">Create User</h1>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <div>Create User</div>
                 <div className="mb-6">
                     <label className="block text-gray-700 text-sm font-bold mb-2">
                         Email
