@@ -7,7 +7,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
   const router = useRouter();
-
+  
   const login = async (e: { preventDefault: () => void }) => {
     localStorage.clear()
     e.preventDefault();
@@ -18,7 +18,7 @@ const Login = () => {
     await axios
       .post('http://localhost:5000/auth/signin', credentials)
       .then((res) => localStorage.setItem('token', res.data.accessToken))
-      .then(() => router.push('/chooseSS'));
+      .then(() => router.push('/choose-source-system'));
   };
 
   return (

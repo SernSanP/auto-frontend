@@ -5,8 +5,9 @@ import { useRouter } from 'next/dist/client/router';
 
 const transactions = () => {
   const router = useRouter();
-  const [transactionGroups, setTransactionGroups] = useState([]);
-  const [sourceSystem,setSourceSystem] = useState('')
+  const [transactionGroups, setTransactionGroups] = useState<any[]>([]);
+  const [sourceSystem, setSourceSystem] = useState('');
+
   useEffect(() => {
     const config = {
       headers: {
@@ -14,43 +15,51 @@ const transactions = () => {
       },
     };
 
-    const getTransactions = async () => {
-      const source_system_name:any = localStorage.getItem('source_system_name');
-      setSourceSystem(source_system_name)
+    const getTransactionGroups = async () => {
+      const source_system_name: any =
+        localStorage.getItem('source_system_name');
+      setSourceSystem(source_system_name);
       const { data: transactions } = await axios.get(
         `http://localhost:5000/transactions?source_system_name=${source_system_name}`,
         config,
       );
-      const transaction_groups = transactions.reduce((arr:any, item:any) => {
-        const index = arr.findIndex(
-          (element:any) =>
-            element.transaction_group_id === item.transaction_group_id,
+      const transaction_groups_id = transactions.reduce(
+        (arr: any, item: any) => {
+          const index = arr.findIndex(
+            (element: any) => element === item.transaction_group_id,
+          );
+          if (index === -1) {
+            arr.push(item.transaction_group_id);
+          }
+          return arr;
+        },
+        [],
+      );
+      let transaction_groups = [];
+      for (let i = 0; i < transaction_groups_id.length; i++) {
+        const { data } = await axios.get(
+          `http://localhost:5000/transaction-groups/${transaction_groups_id[i]}`,
         );
-        if (index === -1) {
-          arr.push({
-            transaction_group_id: item.transaction_group_id,
-          });
-        }
-        return arr;
-      }, []);
+        transaction_groups.push(data);
+      }
       setTransactionGroups(transaction_groups);
     };
 
-    getTransactions();
+    getTransactionGroups();
   }, []);
 
   const goToUpload = () => {
     router.push('/upload');
   };
 
-
   return (
     <div>
       <nav>
         <ul className="list-none">
-          <li className="inline-block">{sourceSystem} {'>'}&nbsp;</li>
+          <li className="inline-block">
+            {sourceSystem} {'>'}&nbsp;
+          </li>
           <li className="inline-block">Transactions</li>
-          {console.log('transactions_group', transactionGroups)}
         </ul>
       </nav>
       <div className="flex justify-between items-center">
@@ -67,9 +76,9 @@ const transactions = () => {
         <div>Page 1/2</div>
         <div>{'>'}</div>
       </div>
-      <div className="pt-6">
-        {transactionGroups.map((group) => (
-          <UploadedTransactions data={group} />
+      <div className="mt-6">
+        {transactionGroups.map((group,index) => (
+          <UploadedTransactions key={index} transaction_group_data={group} />
         ))}
       </div>
     </div>
