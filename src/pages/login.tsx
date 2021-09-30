@@ -1,16 +1,15 @@
 import axios from 'axios';
-import { Router, useRouter } from 'next/dist/client/router';
+import { useRouter } from 'next/dist/client/router';
 import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import cookie from 'js-cookie';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
   const router = useRouter();
-
-  const login = async (e: { preventDefault: () => void; }) => {
+  
+  const login = async (e: { preventDefault: () => void }) => {
+    localStorage.clear()
     e.preventDefault();
     const credentials = {
       email,
@@ -18,8 +17,8 @@ const Login = () => {
     };
     await axios
       .post('http://localhost:5000/auth/signin', credentials)
-      .then((res) => localStorage.setItem('token', res.data.accessToken));
-    await router.push('/chooseSS');
+      .then((res) => localStorage.setItem('token', res.data.accessToken))
+      .then(() => router.push('/choose-source-system'));
   };
 
   return (
